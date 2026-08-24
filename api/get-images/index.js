@@ -10,18 +10,14 @@ cloudinary.config({
 export default async function handler(req, res) {
   try {
     const result = await cloudinary.search
-      .expression('folder:riya-images')
+      .expression('folder:riya-images*')
       .sort_by('created_at', 'desc')
       .max_results(30)
       .execute();
 
     const images = result.resources.map((file) => ({
-      // Generates an optimized, public Cloudinary CDN URL for each asset
-      url: cloudinary.url(file.public_id, {
-        secure: true,
-        quality: 'auto',
-        fetch_format: 'auto',
-      }),
+      // Use the direct secure URL generated natively by Cloudinary
+      url: file.secure_url,
       public_id: file.public_id,
     }));
 
