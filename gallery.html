@@ -33,83 +33,48 @@
   <footer><span>RIYA KUMARI / GALLERY</span><span><a href="index.html">Back to portfolio ↗</a></span></footer>
   <script>
     const galleryGrid = document.getElementById('curated-grid');
-    const localGalleryImages = [
-      '0592F571-F452-49C6-AEF9-F32CB54F4A32_1_201_a.jpeg',
-      'IMG_3856.png',
-      'IMG_5115.PNG',
-      'Image001.png',
-      'Lobby.png',
-      'Power Station UK Uniper.png',
-      'gallery-screenshot-01.png',
-      'gallery-screenshot-02.png',
-      'gallery-screenshot-03.png',
-      'gallery-screenshot-04.png',
-      'gallery-screenshot-05.png',
-      'gallery-screenshot-06.png',
-      'gallery-screenshot-07.png',
-      'gallery-screenshot-08.png',
-      'gallery-screenshot-09.png',
-      'Team.png'
-    ].map((name) => ({ name, src: `images/gallery/${name}` }));
 
     function addGalleryImage(file, index) {
       const figure = document.createElement('figure');
       figure.className = 'gallery-photo';
       figure.style.setProperty('--gallery-order', index);
+
       const image = document.createElement('img');
       image.src = file.download_url;
       image.alt = 'Gallery image';
+
       const imageLink = document.createElement('a');
       imageLink.className = 'gallery-image-link';
       imageLink.href = file.download_url;
       imageLink.target = '_blank';
       imageLink.rel = 'noopener';
       imageLink.setAttribute('aria-label', 'Open gallery image full size');
+
       imageLink.appendChild(image);
       figure.appendChild(imageLink);
       galleryGrid.appendChild(figure);
     }
 
-    function showLocalGallery() {
-      galleryGrid.innerHTML = '';
-      localGalleryImages.forEach((file, index) => addGalleryImage({ ...file, download_url: file.src }, index));
-    }
-
-    if (window.location.protocol === 'file:') {
-      showLocalGallery();
-    } else {
-      fetch('/api/get-images')
-        .then((response) => {
-          if (!response.ok) throw new Error('Cloudinary gallery unavailable');
-          return response.json();
-        })
-        .then(({ images }) => {
-          galleryGrid.innerHTML = '';
-          // AFTER (Fixed):
-          if (window.location.protocol === 'file:') {
-            showLocalGallery();
-          } else {
-            fetch('/api/get-images')
-              .then((response) => {
-                if (!response.ok) throw new Error('Cloudinary gallery unavailable');
-                return response.json();
-              })
-              .then(({ images }) => {
-                galleryGrid.innerHTML = '';
-                images.forEach((image, index) => {
-                  // Correctly passing image.url as download_url or directly setting the src
-                  addGalleryImage({ download_url: image.url }, index);
-                });
-                if (!images.length) {
-                  galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
-                }
-              })
-              .catch(showLocalGallery);
-          }
-          if (!images.length) galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
-        })
-        .catch(showLocalGallery);
-    }
+    // Fetch images from Cloudinary API route
+    fetch('/api/get-images')
+      .then((response) => {
+        if (!response.ok) throw new Error('Cloudinary gallery unavailable');
+        return response.json();
+      })
+      .then(({ images }) => {
+        galleryGrid.innerHTML = '';
+        if (images && images.length > 0) {
+          images.forEach((image, index) => {
+            addGalleryImage({ download_url: image.url }, index);
+          });
+        } else {
+          galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
+        }
+      })
+      .catch((error) => {
+        console.error('Gallery loading error:', error);
+        galleryGrid.innerHTML = '<div class="gallery-note"><strong>Unable to load images.</strong><p>Please try refreshing the page.</p></div>';
+      });
   </script>
 </body>
 
