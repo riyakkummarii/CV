@@ -34,18 +34,24 @@
   <script>
     const galleryGrid = document.getElementById('curated-grid');
 
-    function addGalleryImage(file, index) {
+    function addGalleryImage(imageUrl, index) {
       const figure = document.createElement('figure');
       figure.className = 'gallery-photo';
       figure.style.setProperty('--gallery-order', index);
 
       const image = document.createElement('img');
-      image.src = file.download_url;
-      image.alt = 'Gallery image';
+      image.src = imageUrl;
+      image.alt = `Gallery image ${index + 1}`;
+      image.loading = 'lazy';
+
+      // Fallback if an image fails to load
+      image.onerror = () => {
+        figure.style.display = 'none';
+      };
 
       const imageLink = document.createElement('a');
       imageLink.className = 'gallery-image-link';
-      imageLink.href = file.download_url;
+      imageLink.href = imageUrl;
       imageLink.target = '_blank';
       imageLink.rel = 'noopener';
       imageLink.setAttribute('aria-label', 'Open gallery image full size');
@@ -55,7 +61,6 @@
       galleryGrid.appendChild(figure);
     }
 
-    // Fetch images from Cloudinary API route
     fetch('/api/get-images')
       .then((response) => {
         if (!response.ok) throw new Error('Cloudinary gallery unavailable');
@@ -65,10 +70,10 @@
         galleryGrid.innerHTML = '';
         if (images && images.length > 0) {
           images.forEach((image, index) => {
-            addGalleryImage({ download_url: image.url }, index);
+            addGalleryImage(image.url, index);
           });
         } else {
-          galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
+          galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>No images found in Cloudinary.</p></div>';
         }
       })
       .catch((error) => {

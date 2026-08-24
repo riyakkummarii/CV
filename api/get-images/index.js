@@ -13,21 +13,20 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch all uploaded images from root
     const result = await cloudinary.api.resources({
       type: 'upload',
       resource_type: 'image',
       max_results: 100,
     });
 
-    // Keep ONLY your images (excluding any from the 'samples' folder)
+    // Exclude any default samples or subfolder assets
     const images = (result.resources || [])
       .filter((resource) => !resource.public_id.startsWith('samples/'))
       .map((resource) => ({
         url: resource.secure_url,
       }));
 
-    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
+    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
     return res.status(200).json({ images });
   } catch (error) {
     console.error('Cloudinary API Error:', error);
