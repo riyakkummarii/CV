@@ -6,33 +6,29 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   if (req.method !== 'GET') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
+    return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
+    const folderName = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
+
     const result = await cloudinary.api.resources({
-      type: 'authenticated',
+      type: 'upload', // Changed from 'authenticated' to match your uploaded images
       resource_type: 'image',
-      prefix: process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images',
+      prefix: `${folderName}/`,
       max_results: 100,
     });
 
     const images = result.resources.map((resource) => ({
-      url: cloudinary.url(resource.public_id, {
-        type: 'authenticated',
-        resource_type: 'image',
-        sign_url: true,
-        secure: true,
-        expires_at: Math.floor(Date.now() / 1000) + 3600,
-      }),
+      url: resource.secure_url,
     }));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
-    res.status(200).json({ images });
+    return res.status(200).json({ images });
   } catch (error) {
-    res.status(500).json({ error: 'Unable to load gallery images' });
+    console.error('Cloudinary API Error:', error);
+    return res.status(500).json({ error: 'Unable to load gallery images' });
   }
-};
+}
