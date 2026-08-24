@@ -37,24 +37,18 @@
     function addGalleryImage(imageUrl, index) {
       const figure = document.createElement('figure');
       figure.className = 'gallery-photo';
-      figure.style.setProperty('--gallery-order', index);
 
       const image = document.createElement('img');
       image.src = imageUrl;
-      image.alt = `Gallery image ${index + 1}`;
+      image.alt = `Gallery photo ${index + 1}`;
       image.loading = 'lazy';
-
-      // Fallback if an image fails to load
-      image.onerror = () => {
-        figure.style.display = 'none';
-      };
 
       const imageLink = document.createElement('a');
       imageLink.className = 'gallery-image-link';
       imageLink.href = imageUrl;
       imageLink.target = '_blank';
       imageLink.rel = 'noopener';
-      imageLink.setAttribute('aria-label', 'Open gallery image full size');
+      imageLink.setAttribute('aria-label', 'Open full size photo');
 
       imageLink.appendChild(image);
       figure.appendChild(imageLink);
@@ -73,12 +67,12 @@
             addGalleryImage(image.url, index);
           });
         } else {
-          galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>No images found in Cloudinary.</p></div>';
+          galleryGrid.innerHTML = '<div class="gallery-note"><strong>No images found.</strong></div>';
         }
       })
       .catch((error) => {
         console.error('Gallery loading error:', error);
-        galleryGrid.innerHTML = '<div class="gallery-note"><strong>Unable to load images.</strong><p>Please try refreshing the page.</p></div>';
+        galleryGrid.innerHTML = '<div class="gallery-note"><strong>Unable to load images.</strong></div>';
       });
   </script>
 </body>
