@@ -8,31 +8,26 @@ cloudinary.config({
 });
 
 export default async function handler(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
   try {
-    const result = await cloudinary.api.resources({
-      type: 'upload',
-      resource_type: 'image',
-      max_results: 100,
-    });
+    const result = await cloudinary.search
+      .expression('folder:riya-images')
+      .sort_by('created_at', 'desc')
+      .max_results(30)
+      .execute();
 
-    // Keep ONLY your personal photos, filtering out default Cloudinary sample files
-    const images = (result.resources || [])
-      .filter((resource) => {
-        const id = resource.public_id.toLowerCase();
-        return !id.startsWith('samples/') && !id.startsWith('cld-sample') && !id.startsWith('main-sample') && id !== 'sample';
-      })
-      .map((resource) => ({
-        url: resource.secure_url,
-      }));
+    const images = result.resources.map((file) => ({
+      // Generates an optimized, public Cloudinary CDN URL for each asset
+      url: cloudinary.url(file.public_id, {
+        secure: true,
+        quality: 'auto',
+        fetch_format: 'auto',
+      }),
+      public_id: file.public_id,
+    }));
 
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    return res.status(200).json({ images });
+    res.status(200).json({ images });
   } catch (error) {
-    console.error('Cloudinary API Error:', error);
-    return res.status(500).json({ error: error.message || 'Unable to load gallery images' });
+    console.error('Cloudinary fetch error:', error);
+    res.status(500).json({ error: 'Failed to fetch images' });
   }
 }
