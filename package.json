@@ -1,0 +1,9 @@
+{
+  "name": "riya-qa-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Riya Kumari QA Automation and AI portfolio",
+  "dependencies": {
+    "cloudinary": "^2.0.0"
+  }
+}

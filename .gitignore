@@ -1,0 +1,5 @@
+# Local gallery photos are not published to GitHub
+/images/gallery/*
+
+# macOS metadata
+.DS_Store
