@@ -4,6 +4,7 @@ cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true, // Forces secure HTTPS URLs globally
 });
 
 export default async function handler(req, res) {
@@ -15,14 +16,15 @@ export default async function handler(req, res) {
     const folderName = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
 
     const result = await cloudinary.api.resources({
-      type: 'upload', // Changed from 'authenticated' to match your uploaded images
+      type: 'upload',
       resource_type: 'image',
       prefix: `${folderName}/`,
       max_results: 100,
     });
 
     const images = result.resources.map((resource) => ({
-      url: resource.secure_url,
+      // Explicitly request secure HTTPS URL
+      url: cloudinary.url(resource.public_id, { secure: true }),
     }));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
