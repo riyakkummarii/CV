@@ -13,23 +13,36 @@ export default async function handler(req, res) {
   }
 
   try {
-    const targetFolder = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
+    const folderName = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
 
-    // Search for assets located inside the riya-images folder
-    const result = await cloudinary.search
-      .expression(`folder="${targetFolder}"`)
-      .sort_by('created_at', 'desc')
-      .max_results(100)
-      .execute();
+    // 1. Fetch images from Cloudinary
+    let result = await cloudinary.api.resources({
+      type: 'upload',
+      resource_type: 'image',
+      prefix: `${folderName}/`,
+      max_results: 100,
+    });
 
-    const images = result.resources.map((resource) => ({
-      url: resource.secure_url,
-    }));
+    // 2. Fallback to general list if prefix query returns empty
+    if (!result.resources || result.resources.length === 0) {
+      result = await cloudinary.api.resources({
+        type: 'upload',
+        resource_type: 'image',
+        max_results: 100,
+      });
+    }
+
+    // 3. Filter out sample assets and format URLs securely
+    const images = (result.resources || [])
+      .filter((resource) => !resource.public_id.includes('samples'))
+      .map((resource) => ({
+        url: resource.secure_url,
+      }));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     return res.status(200).json({ images });
   } catch (error) {
-    console.error('Cloudinary Search API Error:', error);
+    console.error('Cloudinary API Error:', error);
     return res.status(500).json({ error: error.message || 'Unable to load gallery images' });
   }
 }
