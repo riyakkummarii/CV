@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,10 +8,13 @@
   <title>Gallery | Riya Kumari</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body class="gallery-page">
   <header class="site-header">
     <a class="brand" href="index.html"><span>RK</span> / QA SYSTEMS</a>
-    <nav aria-label="Gallery navigation"><a href="index.html#work">Experience</a><a href="index.html#capabilities">Capabilities</a><a href="gallery.html" aria-current="page">Gallery</a><a href="index.html#contact">Contact</a></nav>
+    <nav aria-label="Gallery navigation"><a href="index.html#work">Experience</a><a
+        href="index.html#capabilities">Capabilities</a><a href="gallery.html" aria-current="page">Gallery</a><a
+        href="index.html#contact">Contact</a></nav>
     <a class="header-link" href="index.html#contact">Let's connect <span aria-hidden="true">↓</span></a>
   </header>
   <main>
@@ -21,7 +25,9 @@
     </section>
     <section class="gallery-wall section-shell">
       <div class="gallery-wall-heading"><span>WORK, LIFE & EVERYTHING IN BETWEEN ✦</span></div>
-      <div class="curated-grid" id="curated-grid"><div class="gallery-loading">Loading visual story...</div></div>
+      <div class="curated-grid" id="curated-grid">
+        <div class="gallery-loading">Loading visual story...</div>
+      </div>
     </section>
   </main>
   <footer><span>RIYA KUMARI / GALLERY</span><span><a href="index.html">Back to portfolio ↗</a></span></footer>
@@ -79,11 +85,32 @@
         })
         .then(({ images }) => {
           galleryGrid.innerHTML = '';
-          images.forEach((image, index) => addGalleryImage({ name: `Gallery image ${index + 1}`, download_url: image.url }, index));
+          // AFTER (Fixed):
+          if (window.location.protocol === 'file:') {
+            showLocalGallery();
+          } else {
+            fetch('/api/get-images')
+              .then((response) => {
+                if (!response.ok) throw new Error('Cloudinary gallery unavailable');
+                return response.json();
+              })
+              .then(({ images }) => {
+                galleryGrid.innerHTML = '';
+                images.forEach((image, index) => {
+                  // Correctly passing image.url as download_url or directly setting the src
+                  addGalleryImage({ download_url: image.url }, index);
+                });
+                if (!images.length) {
+                  galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
+                }
+              })
+              .catch(showLocalGallery);
+          }
           if (!images.length) galleryGrid.innerHTML = '<div class="gallery-note"><strong>Your gallery starts here.</strong><p>Add images to the riya-images folder in Cloudinary.</p></div>';
         })
         .catch(showLocalGallery);
     }
   </script>
 </body>
+
 </html>
