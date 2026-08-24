@@ -1,4 +1,4 @@
-const cloudinary = require('cloudinary').v2;
+import { v2 as cloudinary } from 'cloudinary';
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     return res.status(200).json({ images });
   } catch (error) {
-    console.error('Cloudinary API Error:', error);
+    console.error('Cloudinary Error:', error);
     return res.status(500).json({ error: error.message || 'Unable to load gallery images' });
   }
 }
