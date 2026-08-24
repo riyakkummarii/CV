@@ -19,14 +19,15 @@ export default async function handler(req, res) {
       max_results: 100,
     });
 
-    // Exclude any default samples or subfolder assets
+    // Exclude any sample assets from Cloudinary default folders
     const images = (result.resources || [])
       .filter((resource) => !resource.public_id.startsWith('samples/'))
       .map((resource) => ({
         url: resource.secure_url,
       }));
 
-    res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
+    // Disable caching so changes display immediately across all browsers
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).json({ images });
   } catch (error) {
     console.error('Cloudinary API Error:', error);
