@@ -13,28 +13,16 @@ export default async function handler(req, res) {
   }
 
   try {
-    const folderName = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
-
-    // 1. Fetch images from Cloudinary
-    let result = await cloudinary.api.resources({
+    // Fetch all uploaded images from root
+    const result = await cloudinary.api.resources({
       type: 'upload',
       resource_type: 'image',
-      prefix: `${folderName}/`,
       max_results: 100,
     });
 
-    // 2. Fallback to general list if prefix query returns empty
-    if (!result.resources || result.resources.length === 0) {
-      result = await cloudinary.api.resources({
-        type: 'upload',
-        resource_type: 'image',
-        max_results: 100,
-      });
-    }
-
-    // 3. Filter out sample assets and format URLs securely
+    // Keep ONLY your images (excluding any from the 'samples' folder)
     const images = (result.resources || [])
-      .filter((resource) => !resource.public_id.includes('samples'))
+      .filter((resource) => !resource.public_id.startsWith('samples/'))
       .map((resource) => ({
         url: resource.secure_url,
       }));
