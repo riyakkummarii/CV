@@ -13,26 +13,23 @@ export default async function handler(req, res) {
   }
 
   try {
-    const folderName = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
+    const targetFolder = process.env.CLOUDINARY_GALLERY_FOLDER || 'riya-images';
 
-    const result = await cloudinary.api.resources({
-      type: 'upload',
-      resource_type: 'image',
-      prefix: `${folderName}/`,
-      max_results: 100,
-    });
+    // Search for assets located inside the riya-images folder
+    const result = await cloudinary.search
+      .expression(`folder="${targetFolder}"`)
+      .sort_by('created_at', 'desc')
+      .max_results(100)
+      .execute();
 
-    // Filter out any image that belongs to the 'samples' subfolder
-    const images = result.resources
-      .filter((resource) => !resource.public_id.startsWith(`${folderName}/samples/`))
-      .map((resource) => ({
-        url: resource.secure_url,
-      }));
+    const images = result.resources.map((resource) => ({
+      url: resource.secure_url,
+    }));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     return res.status(200).json({ images });
   } catch (error) {
-    console.error('Cloudinary API Error:', error);
+    console.error('Cloudinary Search API Error:', error);
     return res.status(500).json({ error: error.message || 'Unable to load gallery images' });
   }
 }
