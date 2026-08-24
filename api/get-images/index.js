@@ -22,14 +22,17 @@ export default async function handler(req, res) {
       max_results: 100,
     });
 
-    const images = result.resources.map((resource) => ({
-      url: resource.secure_url,
-    }));
+    // Filter out any image that belongs to the 'samples' subfolder
+    const images = result.resources
+      .filter((resource) => !resource.public_id.startsWith(`${folderName}/samples/`))
+      .map((resource) => ({
+        url: resource.secure_url,
+      }));
 
     res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
     return res.status(200).json({ images });
   } catch (error) {
-    console.error('Cloudinary Error:', error);
+    console.error('Cloudinary API Error:', error);
     return res.status(500).json({ error: error.message || 'Unable to load gallery images' });
   }
 }
