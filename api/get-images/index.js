@@ -19,14 +19,16 @@ export default async function handler(req, res) {
       max_results: 100,
     });
 
-    // Exclude any sample assets from Cloudinary default folders
+    // Keep ONLY your personal photos, filtering out default Cloudinary sample files
     const images = (result.resources || [])
-      .filter((resource) => !resource.public_id.startsWith('samples/'))
+      .filter((resource) => {
+        const id = resource.public_id.toLowerCase();
+        return !id.startsWith('samples/') && !id.startsWith('cld-sample') && !id.startsWith('main-sample') && id !== 'sample';
+      })
       .map((resource) => ({
         url: resource.secure_url,
       }));
 
-    // Disable caching so changes display immediately across all browsers
     res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
     return res.status(200).json({ images });
   } catch (error) {
