@@ -11,11 +11,20 @@ export default async function handler(req, res) {
   try {
     const result = await cloudinary.search
       .expression('folder:riya-images*')
-      .sort_by('public_id', 'asc')
       .max_results(30)
       .execute();
 
-    const images = result.resources.map((file) => {
+    const files = [...result.resources].sort((firstFile, secondFile) => {
+      const firstName = firstFile.display_name || firstFile.original_filename || firstFile.public_id;
+      const secondName = secondFile.display_name || secondFile.original_filename || secondFile.public_id;
+
+      return firstName.localeCompare(secondName, undefined, {
+        numeric: true,
+        sensitivity: 'base',
+      });
+    });
+
+    const images = files.map((file) => {
       // Generates an authenticated signed private download URL
       const signedUrl = cloudinary.utils.private_download_url(
         file.public_id,
