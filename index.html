@@ -15,11 +15,17 @@
 <body>
   <header class="site-header">
     <a class="brand" href="#top" aria-label="Riya Kumari home"><span>RK</span> / QA SYSTEMS</a>
-    <nav aria-label="Main navigation"><a href="#work">Experience</a><a href="#capabilities">Capabilities</a><a href="gallery.html">Gallery</a><a href="#contact">Contact</a></nav>
+    <nav aria-label="Main navigation"><a href="#work">Experience</a><a href="#capabilities">Capabilities</a><a href="https://portfolio-zeta-fawn-35.vercel.app/gallery.html">Gallery</a></nav>
     <a class="header-link" href="#contact">Let's connect <span aria-hidden="true">↓</span></a>
   </header>
 
   <main id="top">
+    <script>
+      if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+      window.addEventListener('pageshow', () => {
+        if (!window.location.hash) window.scrollTo(0, 0);
+      });
+    </script>
     <section class="hero section-shell">
       <div class="hero-copy">
         <p class="eyebrow"><span class="status-dot"></span> Available for automation leadership</p>
