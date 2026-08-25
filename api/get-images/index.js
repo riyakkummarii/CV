@@ -9,21 +9,32 @@ cloudinary.config({
 
 export default async function handler(req, res) {
   try {
+    // 1. Search for all assets inside your folder
     const result = await cloudinary.search
       .expression('folder:riya-images*')
       .sort_by('created_at', 'desc')
       .max_results(30)
       .execute();
 
-    const images = result.resources.map((file) => ({
-      // Use the direct secure URL generated natively by Cloudinary
-      url: file.secure_url,
-      public_id: file.public_id,
-    }));
+    // 2. Generate a signed URL for every asset
+    const images = result.resources.map((file) => {
+      const signedUrl = cloudinary.url(file.public_id, {
+        sign_url: true, // Signs the URL with your API Secret
+        type: file.type || 'upload', // Supports private, authenticated, or upload types
+        resource_type: file.resource_type || 'image',
+        secure: true,
+        expires_at: Math.floor(Date.now() / 1000) + 3600, // Valid for 1 hour (3600 seconds)
+      });
+
+      return {
+        url: signedUrl,
+        public_id: file.public_id,
+      };
+    });
 
     res.status(200).json({ images });
   } catch (error) {
     console.error('Cloudinary fetch error:', error);
-    res.status(500).json({ error: 'Failed to fetch images' });
+    res.status(500).json({ error: 'Failed to fetch signed image URLs' });
   }
 }
