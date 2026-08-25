@@ -1254,6 +1254,7 @@ footer {
 .visual-rail figure {
     position: relative;
     min-height: 170px;
+    height: 250px;
     margin: 0;
     overflow: hidden;
     background: var(--ink);
@@ -1277,8 +1278,7 @@ footer {
 }
 
 .visual-rail figure:nth-child(3) img {
-    object-fit: contain;
-    padding: 20px;
+    object-fit: cover;
 }
 
 .visual-rail figure:hover img {
@@ -1295,6 +1295,12 @@ footer {
     background: var(--ink);
     font-family: var(--mono);
     font-size: 10px;
+}
+
+.visual-rail figcaption b {
+    margin-right: 8px;
+    color: var(--acid);
+    font-weight: 400;
 }
 
 .visual-rail figure:nth-child(3) figcaption {
@@ -1344,6 +1350,7 @@ footer {
 
     .visual-rail figure {
         min-height: 145px;
+        height: 190px;
     }
 
     .visual-rail figure:nth-child(2) {
@@ -1353,6 +1360,7 @@ footer {
     .visual-rail figure:nth-child(3) {
         grid-column: 1 / -1;
         min-height: 120px;
+        height: 170px;
     }
 
     .visual-rail figure:nth-child(3) img {
