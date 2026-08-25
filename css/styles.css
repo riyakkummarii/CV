@@ -445,7 +445,17 @@ h2 {
     background: #d8dfdc;
 }
 
+.gallery-photo::before {
+    position: absolute;
+    inset: -16px;
+    content: '';
+    background: var(--gallery-image) center / cover;
+    filter: blur(18px);
+    opacity: .45;
+}
+
 .gallery-image-link {
+    position: relative;
     display: block;
     width: 100%;
     height: 100%;

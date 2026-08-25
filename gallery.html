@@ -36,6 +36,7 @@
     function addGalleryImage(imageUrl, index) {
       const figure = document.createElement('figure');
       figure.className = 'gallery-photo';
+      figure.style.setProperty('--gallery-image', `url("${imageUrl}")`);
 
       const image = document.createElement('img');
       image.src = imageUrl;
