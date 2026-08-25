@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body class="gallery-page">
+<body class="gallery-page" id="top">
   <header class="site-header">
     <a class="brand" href="index.html"><span>RK</span> / QA SYSTEMS</a>
     <nav aria-label="Gallery navigation"><a href="index.html#work">Experience</a><a
@@ -29,7 +29,11 @@
       </div>
     </section>
   </main>
-  <footer><span>RIYA KUMARI / GALLERY</span><span><a href="index.html">Back to portfolio ↗</a></span></footer>
+  <nav class="page-nav" aria-label="Gallery navigation">
+    <a href="#top" aria-label="Back to top" title="Back to top">↑</a>
+    <a href="#gallery-footer" aria-label="Go to bottom" title="Go to bottom">↓</a>
+  </nav>
+  <footer id="gallery-footer"><span>RIYA KUMARI / GALLERY</span><span><a href="index.html">Back to portfolio ↗</a></span></footer>
   <script>
     const galleryGrid = document.getElementById('curated-grid');
 
