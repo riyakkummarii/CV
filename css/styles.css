@@ -456,13 +456,8 @@ h2 {
     width: 100%;
     height: 100%;
     display: block;
-    object-fit: cover;
-    transition: transform .5s ease;
+    object-fit: contain;
     cursor: pointer;
-}
-
-.gallery-photo:hover img {
-    transform: scale(1.05);
 }
 
 .gallery-loading,
