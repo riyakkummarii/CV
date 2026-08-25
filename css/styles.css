@@ -770,22 +770,27 @@ h2 {
 }
 
 .closing-section {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     padding-top: 48px;
-    padding-bottom: 120px;
+    padding-bottom: 0;
 }
 
 .closing-section h2 {
     max-width: 730px;
-    margin: 27px 0 35px;
+    margin: 27px 0 6px;
 }
 
 .contact-details {
+    align-self: stretch;
     display: flex;
     flex-wrap: wrap;
     gap: 28px;
-    margin-top: 90px;
-    padding-top: 18px;
+    margin-top: -60px;
+    padding-top: 14px;
     border-top: 1px solid var(--line);
+    background: transparent;
     color: var(--muted);
     font-family: var(--mono);
     font-size: 11px;
@@ -793,6 +798,8 @@ h2 {
 
 .contact-details a {
     color: var(--ink);
+    background: transparent;
+    text-decoration: none;
 }
 
 .contact-details span {
@@ -802,6 +809,35 @@ h2 {
 .closing-section .button-primary {
     font-size: 12px;
     padding: 14px 19px;
+    margin-bottom: 0;
+    display: inline-block;
+}
+
+.gallery-link {
+    display: block;
+    margin-top: 20px;
+    margin-bottom: 0;
+    padding: 14px 18px;
+    background: rgba(199, 220, 120, 0.1);
+    color: var(--ink);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    font-weight: 600;
+}
+
+.gallery-link a {
+    color: var(--ink);
+    text-decoration: underline;
+    font-weight: 600;
+    text-decoration-color: var(--acid);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 3px;
+    transition: all .2s ease;
+}
+
+.gallery-link a:hover {
+    color: var(--coral);
 }
 
 footer {
@@ -1315,7 +1351,7 @@ footer {
 
 .visual-rail figure:nth-child(5) img {
     min-height: 0;
-    padding: 18px;
+    padding: 0;
     object-fit: contain;
 }
 
