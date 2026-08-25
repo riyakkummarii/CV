@@ -14,11 +14,12 @@
   <title>Riya Kumari | QA Automation Engineer & AI Test Engineer</title>
   <script>
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-    if (window.location.hash) {
-      history.replaceState(null, document.title, `${window.location.pathname}${window.location.search}`);
+    if (!window.location.hash) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
     }
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-    window.addEventListener('pageshow', () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
+    window.addEventListener('pageshow', () => {
+      if (!window.location.hash) window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
   </script>
   <link rel="stylesheet" href="css/styles.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
