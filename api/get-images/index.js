@@ -16,17 +16,19 @@ export default async function handler(req, res) {
       .execute();
 
     const images = result.resources.map((file) => {
-      // Build signed URL matching the exact storage access type (private/authenticated/upload)
-      const url = cloudinary.url(file.public_id, {
-        sign_url: true,
-        type: file.type, // 'private', 'authenticated', or 'upload'
-        resource_type: file.resource_type || 'image',
-        format: file.format,
-        secure: true,
-      });
+      // Generates an authenticated signed private download URL
+      const signedUrl = cloudinary.utils.private_download_url(
+        file.public_id,
+        file.format,
+        {
+          resource_type: file.resource_type || 'image',
+          type: file.type || 'private',
+          expires_at: Math.floor(Date.now() / 1000) + 3600, // Valid for 1 hour
+        }
+      );
 
       return {
-        url: url,
+        url: signedUrl,
         public_id: file.public_id,
       };
     });
