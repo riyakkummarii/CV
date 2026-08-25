@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   try {
     const result = await cloudinary.search
       .expression('folder:riya-images*')
-      .sort_by('created_at', 'desc')
+      .sort_by('public_id', 'asc')
       .max_results(30)
       .execute();
 
