@@ -37,12 +37,10 @@ export default async function handler(req, res) {
     const file = files[0];
     const resourceType = file.resource_type || 'image';
     const fileType = file.type || 'private';
-    const url = cloudinary.url(file.public_id, {
+    const url = cloudinary.utils.private_download_url(file.public_id, file.format, {
       resource_type: resourceType,
       type: fileType,
-      format: file.format,
-      sign_url: true,
-      secure: true,
+      expires_at: Math.floor(Date.now() / 1000) + 3600,
     });
 
     return res.redirect(302, url);
