@@ -842,13 +842,26 @@ h2 {
 
 footer {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
+    gap: 16px;
     padding: 20px 5vw;
     color: #95a4a2;
     background: var(--ink);
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: .04em;
+}
+
+footer a {
+    color: var(--acid);
+    border-bottom: 1px solid var(--acid);
+}
+
+footer a:hover {
+    color: var(--coral);
+    border-color: var(--coral);
 }
 
 .page-nav {
@@ -1696,13 +1709,9 @@ footer {
         line-height: 2;
     }
 
-    .gallery-page footer span + span {
-        display: inline;
-        margin-top: 0;
-    }
-
     .gallery-page footer {
         display: flex;
+        flex-wrap: wrap;
         align-items: center;
         gap: 16px;
     }
