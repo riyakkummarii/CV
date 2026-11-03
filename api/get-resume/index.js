@@ -40,6 +40,7 @@ export default async function handler(req, res) {
     const url = cloudinary.url(file.public_id, {
       resource_type: resourceType,
       type: fileType,
+      format: file.format,
       sign_url: true,
       secure: true,
     });
